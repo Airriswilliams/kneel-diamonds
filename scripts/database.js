@@ -33,10 +33,69 @@ const database = {
             styleId: 3,
             timestamp: 1614659931693
         }
-    ]
+    ],
+    orderBuilder: {},
+        
+
 }
+
+        
+    
 
 export const getMetals = () => {
     return database.metals.map(metal => ({...metal}))
 }
+// define and export a function that contains the array of diamond sizes
+export const getSizes = () => {
+    return database.sizes.map(size => ({...size}))
+}
 
+// define and export a function that contains the array of styles
+export const getStyles = () => {
+    return database.styles.map(style => ({...style}))
+}
+
+// define and export a function that contains the array of customOrders
+export const getOrders = () => {
+    // return database.customOrders using the MAP array method
+    return database.customOrders.map(order => ({...order}))
+}
+
+// put a new property into the ordebuilder object, creating a metalId??
+export const setMetal = (id) => {
+    database.orderBuilder.metalId = id
+}
+
+export const setSize = (id) => {
+    database.orderBuilder.sizeId = id
+}
+
+export const setStyle = (id) => {
+    database.orderBuilder.styleId = id
+}
+
+// take the temporary choices currently being stored in the orderBuilder state
+// object and make them permanent.
+export const addCustomOrder = () => {
+    // Copy the current state of user choices
+    const newOrder = {...database.orderBuilder}
+
+    // Add a new primary key to the object
+    // . length property gives back the number of elements in an array
+    // to get the last index of an array with 5 indexes you have to begin
+    // at 4. ????
+    const lastIndex = database.customOrders.length - 1
+    newOrder.id = database.customOrders[lastIndex].id + 1
+
+    // Add a timestamp to the order
+    newOrder.timestamp = Date.now()
+
+    // Add the new order object to custom orders state
+    database.customOrders.push(newOrder)
+
+    // Reset the temporary state for user choices
+    database.orderBuilder = {}
+
+    // Broadcast a notification that permanent state has changed
+    document.dispatchEvent(new CustomEvent("stateChanged"))
+}
